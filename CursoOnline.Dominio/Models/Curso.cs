@@ -6,7 +6,7 @@ namespace CursoOnline.Dominio.Models
     public class Curso
     {
         public string Nome { get; }
-        private string Descricao { get; }
+        public string Descricao { get; }
         public int CargaHoraria { get; }
         public EPublicoAlvo PublicoAlvo { get; }
         public decimal Valor { get; }
