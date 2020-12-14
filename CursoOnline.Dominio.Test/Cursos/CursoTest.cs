@@ -1,26 +1,13 @@
 using System;
+using CursoOnline.Dominio.Test.Builders;
 using CursoOnline.Dominio.Test.Extensions;
 using ExpectedObjects;
 using Xunit;
 
-namespace CursoOnline.Dominio.Test.Curso
+namespace CursoOnline.Dominio.Test.Cursos
 {
     public class CursoTest
     {
-    
-        private readonly string _nome;
-        private readonly int _cargaHoraria;
-        private readonly EPublicoAlvo _publicoAlvo;
-        private readonly decimal _valor;
-
-        public CursoTest()
-        {
-            _nome         = "Informática Básica";
-            _cargaHoraria = 80;
-            _publicoAlvo  = EPublicoAlvo.Estudante;
-            _valor        = 950.25m;
-        }
-
         
         [Fact(DisplayName = "DeveCriarCurso")]
         public void DeveCriarCurso()
@@ -28,10 +15,10 @@ namespace CursoOnline.Dominio.Test.Curso
             //Given
             var cursoEsperado = new 
             {
-                Nome         = _nome,
-                CargaHoraria = _cargaHoraria,
-                PublicoAlvo  = _publicoAlvo,
-                Valor        = _valor
+                Nome         = "Informática Básica",
+                CargaHoraria = 80,
+                PublicoAlvo  = EPublicoAlvo.Estudante,
+                Valor        = 950.25m
             };
 
             //When
@@ -52,11 +39,10 @@ namespace CursoOnline.Dominio.Test.Curso
         public void NaoDeveTerNomeInvalido(string nomeInvalido)
         {
             //When
-            Action action = () => new Curso(
-                nomeInvalido, 
-                _cargaHoraria, 
-                _publicoAlvo, 
-                _valor);
+            Action action = () => CursoBuilder
+                .Novo()
+                .ComNome(nomeInvalido)
+                .Build();
             
             //Then
             Assert.Throws<ArgumentException>(action).WithMessage("Nome inválido");
@@ -68,11 +54,10 @@ namespace CursoOnline.Dominio.Test.Curso
         public void NaoDeveTerCargaHorariaInvalida(int cargaHorariaInvalida)
         {
             //When
-            Action action = () => new Curso(
-                _nome, 
-                cargaHorariaInvalida, 
-                _publicoAlvo, 
-                _valor);
+            Action action = () => CursoBuilder
+                .Novo()
+                .ComCargaHoraria(cargaHorariaInvalida)
+                .Build();
 
             //Then
             Assert.Throws<ArgumentException>(action).WithMessage("Carga horária inválida");
@@ -84,11 +69,10 @@ namespace CursoOnline.Dominio.Test.Curso
         public void NaoDeveTerPrecoInvalido(decimal valorInvalido)
         {
             //When
-            Action action = () => new Curso(
-                _nome, 
-                _cargaHoraria, 
-                _publicoAlvo,
-                valorInvalido);
+            Action action = () => CursoBuilder
+                .Novo()
+                .ComValor(valorInvalido)
+                .Build();
 
             //Then
             Assert.Throws<ArgumentException>(action).WithMessage("Valor inválido");
