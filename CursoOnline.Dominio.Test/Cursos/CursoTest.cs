@@ -1,4 +1,5 @@
 using System;
+using Bogus;
 using CursoOnline.Dominio.Enums;
 using CursoOnline.Dominio.Models;
 using CursoOnline.Dominio.Test.Builders;
@@ -15,13 +16,15 @@ namespace CursoOnline.Dominio.Test.Cursos
         public void DeveCriarCurso()
         {
             //Given
+            var faker = new Faker();
+
             var cursoEsperado = new
             {
-                Nome = "Informática Básica",
-                Descricao = "Exemplo de descrição",
-                CargaHoraria = 80,
-                PublicoAlvo = EPublicoAlvo.Estudante,
-                Valor = 950.25m
+                Nome         = faker.Random.Word(),
+                Descricao    = faker.Lorem.Paragraph(),
+                CargaHoraria = faker.Random.Int(1, 180),
+                Valor        = faker.Random.Decimal(0.01m, 1000m),
+                PublicoAlvo  = faker.Random.Enum<EPublicoAlvo>()
             };
 
             //When

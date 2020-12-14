@@ -1,3 +1,4 @@
+using Bogus;
 using CursoOnline.Dominio.Enums;
 using CursoOnline.Dominio.Models;
 
@@ -6,12 +7,21 @@ namespace CursoOnline.Dominio.Test.Builders
     public class CursoBuilder
     {
 
-        private string _nome = "Informática Básica";
-        private string _descricao = "";
-        private int _cargaHoraria = 80;
-        private decimal _valor = 950.25m;
-        private EPublicoAlvo _publicoAlvo = EPublicoAlvo.Estudante;
+        private string _nome;
+        private string _descricao;
+        private int _cargaHoraria;
+        private decimal _valor;
+        private readonly EPublicoAlvo _publicoAlvo;
 
+        private CursoBuilder()
+        {
+            var faker = new Faker();
+            _nome         = faker.Random.Word();
+            _descricao    = faker.Lorem.Paragraph();
+            _cargaHoraria = faker.Random.Int(1, 180);
+            _valor        = faker.Random.Decimal(0.01m, 1000m);
+            _publicoAlvo  = faker.Random.Enum<EPublicoAlvo>();
+        }
 
         public static CursoBuilder Novo() => new CursoBuilder();
 
