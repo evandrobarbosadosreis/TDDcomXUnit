@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CursoOnline.Dominio", "Dominio\CursoOnline.Dominio.csproj", "{0B1D6449-3824-4B72-8E57-03A7020DAEBF}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CursoOnline.Dominio", "CursoOnline.Dominio\CursoOnline.Dominio.csproj", "{0B1D6449-3824-4B72-8E57-03A7020DAEBF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CursoOnline.Dominio.Test", "Dominio.Test\CursoOnline.Dominio.Test.csproj", "{17D8E7E5-ED5D-4556-B2E0-BF27B5C02F17}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CursoOnline.Dominio.Test", "CursoOnline.Dominio.Test\CursoOnline.Dominio.Test.csproj", "{17D8E7E5-ED5D-4556-B2E0-BF27B5C02F17}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
