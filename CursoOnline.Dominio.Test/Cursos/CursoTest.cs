@@ -8,24 +8,26 @@ namespace CursoOnline.Dominio.Test.Cursos
 {
     public class CursoTest
     {
-        
+
         [Fact(DisplayName = "DeveCriarCurso")]
         public void DeveCriarCurso()
         {
             //Given
-            var cursoEsperado = new 
+            var cursoEsperado = new
             {
-                Nome         = "Informática Básica",
+                Nome = "Informática Básica",
+                Descricao = "Exemplo de descrição",
                 CargaHoraria = 80,
-                PublicoAlvo  = EPublicoAlvo.Estudante,
-                Valor        = 950.25m
+                PublicoAlvo = EPublicoAlvo.Estudante,
+                Valor = 950.25m
             };
 
             //When
             var curso = new Curso(
-                cursoEsperado.Nome, 
-                cursoEsperado.CargaHoraria, 
-                cursoEsperado.PublicoAlvo, 
+                cursoEsperado.Nome,
+                cursoEsperado.Descricao,
+                cursoEsperado.CargaHoraria,
+                cursoEsperado.PublicoAlvo,
                 cursoEsperado.Valor);
 
             //Then
@@ -43,7 +45,7 @@ namespace CursoOnline.Dominio.Test.Cursos
                 .Novo()
                 .ComNome(nomeInvalido)
                 .Build();
-            
+
             //Then
             Assert.Throws<ArgumentException>(action).WithMessage("Nome inválido");
         }
@@ -79,7 +81,7 @@ namespace CursoOnline.Dominio.Test.Cursos
         }
     }
 
-    public enum EPublicoAlvo 
+    public enum EPublicoAlvo
     {
         Estudante = 1,
         Universitario = 2,
@@ -90,12 +92,13 @@ namespace CursoOnline.Dominio.Test.Cursos
     public class Curso
     {
         public string Nome { get; }
+        private string Descricao { get; }
         public int CargaHoraria { get; }
         public EPublicoAlvo PublicoAlvo { get; }
         public decimal Valor { get; }
 
-        public Curso(string nome, int cargaHoraria, EPublicoAlvo publicoAlvo, decimal valor)
-        {        
+        public Curso(string nome, string descricao, int cargaHoraria, EPublicoAlvo publicoAlvo, decimal valor)
+        {
             if (string.IsNullOrEmpty(nome))
             {
                 throw new ArgumentException("Nome inválido");
@@ -109,9 +112,10 @@ namespace CursoOnline.Dominio.Test.Cursos
             if (valor <= 0)
             {
                 throw new ArgumentException("Valor inválido");
-            }                        
-               
+            }
+
             Nome = nome;
+            Descricao = descricao;
             CargaHoraria = cargaHoraria;
             PublicoAlvo = publicoAlvo;
             Valor = valor;
