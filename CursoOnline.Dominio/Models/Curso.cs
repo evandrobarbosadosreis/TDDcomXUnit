@@ -19,17 +19,62 @@ namespace CursoOnline.Dominio.Models
         {
             GerenciadorValidacoes
                 .Novo()
-                .Quando(string.IsNullOrEmpty(nome), "Nome inválido")
-                .Quando(cargaHoraria <= 0, "Carga horária inválida")
-                .Quando(valor <= 0, "Valor inválido")
-                .Quando(!Enum.IsDefined(publicoAlvo), "Público alvo inválido")
+                .Quando(string.IsNullOrEmpty(nome), Resources.NomeInvalido)
+                .Quando(cargaHoraria <= 0, Resources.CargaHorariaInvalida)
+                .Quando(valor <= 0, Resources.ValorInvalido)
+                .Quando(!Enum.IsDefined(publicoAlvo), Resources.PublicoAlvoInvalido)
                 .LancarExceptionSeExistir();
 
-            Nome = nome;
-            Descricao = descricao;
+            Nome         = nome;
+            Descricao    = descricao;
             CargaHoraria = cargaHoraria;
-            PublicoAlvo = publicoAlvo;
-            Valor = valor;
+            PublicoAlvo  = publicoAlvo;
+            Valor        = valor;
+        }
+
+        public void AlterarNome(string novoNome)
+        {
+            GerenciadorValidacoes
+                .Novo()
+                .Quando(String.IsNullOrEmpty(novoNome), Resources.NomeInvalido)
+                .LancarExceptionSeExistir();
+            
+            Nome = novoNome;
+        }
+
+        public void AlterarDescricao(string novaDescricao)
+        {
+            Descricao = novaDescricao;
+        }
+
+        public void AlterarValor(decimal novoValor)
+        {
+            GerenciadorValidacoes
+                .Novo()
+                .Quando(novoValor <= 0, Resources.ValorInvalido)
+                .LancarExceptionSeExistir();
+
+            Valor = novoValor;
+        }
+
+        public void AlterarCargaHoraria(int novaCargaHoraria)
+        {
+            GerenciadorValidacoes
+                .Novo()
+                .Quando(novaCargaHoraria <= 0,  Resources.CargaHorariaInvalida)
+                .LancarExceptionSeExistir();
+
+            CargaHoraria = novaCargaHoraria;
+        }
+
+        public void AlterarPublicoAlvo(EPublicoAlvo novoPublicoAlvo)
+        {
+            GerenciadorValidacoes
+                .Novo()
+                .Quando(!Enum.IsDefined(novoPublicoAlvo), Resources.PublicoAlvoInvalido)
+                .LancarExceptionSeExistir();            
+
+            PublicoAlvo = novoPublicoAlvo;
         }
     }
 }

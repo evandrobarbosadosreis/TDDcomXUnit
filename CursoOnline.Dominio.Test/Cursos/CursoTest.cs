@@ -5,6 +5,7 @@ using CursoOnline.Dominio.Exceptions;
 using CursoOnline.Dominio.Models;
 using CursoOnline.Dominio.Test.Builders;
 using CursoOnline.Dominio.Test.Extensions;
+using CursoOnline.Dominio.Utils;
 using ExpectedObjects;
 using Xunit;
 
@@ -13,19 +14,24 @@ namespace CursoOnline.Dominio.Test.Cursos
     public class CursoTest
     {
 
-        [Fact(DisplayName = "DeveCriarCurso")]
-        public void DeveCriarCurso()
+        private readonly Faker _faker;
+
+        public CursoTest()
+        {
+            _faker = new Faker();
+        }
+
+        [Fact]
+        public void DeveCriarCursoCorretamente()
         {
             //Given
-            var faker = new Faker();
-
             var cursoEsperado = new
             {
-                Nome         = faker.Random.Word(),
-                Descricao    = faker.Lorem.Paragraph(),
-                CargaHoraria = faker.Random.Int(1, 180),
-                Valor        = faker.Random.Decimal(0.01m, 1000m),
-                PublicoAlvo  = faker.Random.Enum<EPublicoAlvo>()
+                Nome         = _faker.Random.Word(),
+                Descricao    = _faker.Lorem.Paragraph(),
+                CargaHoraria = _faker.Random.Int(1, 180),
+                Valor        = _faker.Random.Decimal(0.01m, 1000m),
+                PublicoAlvo  = _faker.Random.Enum<EPublicoAlvo>()
             };
 
             //When
@@ -41,10 +47,10 @@ namespace CursoOnline.Dominio.Test.Cursos
         }
 
 
-        [Theory(DisplayName = "NaoDeveTerNomeInvalido")]
+        [Theory]
         [InlineData("")]
         [InlineData(null)]
-        public void NaoDeveTerNomeInvalido(string nomeInvalido)
+        public void NaoDeveCriarComNomeInvalido(string nomeInvalido)
         {
             //When
             Action action = () => CursoBuilder
@@ -53,13 +59,13 @@ namespace CursoOnline.Dominio.Test.Cursos
                 .Build();
 
             //Then
-            Assert.Throws<ModeloInvalidoException>(action).WithMessage("Nome inválido");
+            Assert.Throws<ModeloInvalidoException>(action).WithMessage(Resources.NomeInvalido);
         }
 
-        [Theory(DisplayName = "NaoDeveTerCargaHorariaInvalida")]
+        [Theory]
         [InlineData(0)]
         [InlineData(-1)]
-        public void NaoDeveTerCargaHorariaInvalida(int cargaHorariaInvalida)
+        public void NaoDeveCriarComCargaHorariaInvalida(int cargaHorariaInvalida)
         {
             //When
             Action action = () => CursoBuilder
@@ -68,13 +74,14 @@ namespace CursoOnline.Dominio.Test.Cursos
                 .Build();
 
             //Then
-            Assert.Throws<ModeloInvalidoException>(action).WithMessage("Carga horária inválida");
+            Assert.Throws<ModeloInvalidoException>(action).WithMessage(Resources.CargaHorariaInvalida);
         }
 
-        [Theory(DisplayName = "NaoDeveTerPrecoInvalido")]
+        [Theory]
         [InlineData(0.00)]
         [InlineData(-0.01)]
-        public void NaoDeveTerPrecoInvalido(decimal valorInvalido)
+        [InlineData(-100.00)]
+        public void NaoDeveCriarComPrecoInvalido(decimal valorInvalido)
         {
             //When
             Action action = () => CursoBuilder
@@ -83,13 +90,13 @@ namespace CursoOnline.Dominio.Test.Cursos
                 .Build();
 
             //Then
-            Assert.Throws<ModeloInvalidoException>(action).WithMessage("Valor inválido");
+            Assert.Throws<ModeloInvalidoException>(action).WithMessage(Resources.ValorInvalido);
         }
 
-        [Theory(DisplayName = "NaoDeveTerPublicoAlvoInvalido")]
+        [Theory]
         [InlineData(-1)]
         [InlineData(5)]
-        public void NaoDeveTerPublicoAlvoInvalido(int publicoAlvoInvalido)
+        public void NaoDeveCriarComPublicoAlvoInvalido(int publicoAlvoInvalido)
         {
             //When
             Action action = () => CursoBuilder
@@ -98,7 +105,156 @@ namespace CursoOnline.Dominio.Test.Cursos
                 .Build();
 
             //Then
-            Assert.Throws<ModeloInvalidoException>(action).WithMessage("Público alvo inválido");
+            Assert.Throws<ModeloInvalidoException>(action).WithMessage(Resources.PublicoAlvoInvalido);
+        }
+
+        [Fact]
+        public void DeveAlterarNome()
+        {
+            //Given
+            var novoNome = _faker.Random.Word();
+            var curso = CursoBuilder
+                .Novo()
+                .Build();
+
+            //When
+            curso.AlterarNome(novoNome);
+
+            //Then
+            Assert.Equal(curso.Nome, novoNome);
+        }
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public void NaoDeveAlterarComNomeInvalido(string nomeInvalido)
+        {
+            //Given
+            var curso = CursoBuilder
+                .Novo()
+                .Build();
+            
+            //When
+            Action action = () => curso.AlterarNome(nomeInvalido);
+            
+            //Then
+            Assert.Throws<ModeloInvalidoException>(action).WithMessage(Resources.NomeInvalido);
+        }
+
+        [Fact]
+        public void DeveAlterarDescricao()
+        {
+            //Given
+            var novaDescricao = _faker.Lorem.Paragraph();
+            var curso = CursoBuilder
+                .Novo()
+                .Build();
+
+            //When
+            curso.AlterarDescricao(novaDescricao);
+
+            //Then
+            Assert.Equal(curso.Descricao, novaDescricao);
+        }
+
+        [Fact]
+        public void DeveAlterarValor()
+        {
+            //Given
+            var novoValor = _faker.Random.Decimal(0.01m, 1500m);
+            var curso = CursoBuilder
+                .Novo()
+                .Build();
+
+            //When
+            curso.AlterarValor(novoValor);
+
+            //Then
+            Assert.Equal(curso.Valor, novoValor);
+        }
+
+        [Theory]
+        [InlineData(0.0)]
+        [InlineData(-0.01)]
+        [InlineData(-100.00)]
+        public void NaoDeveAlterarComValorInvalido(decimal valorInvalido)
+        {
+            //Given
+            var curso = CursoBuilder
+                .Novo()
+                .Build();
+
+            //When
+            Action action = () => curso.AlterarValor(valorInvalido);
+
+            //Then
+            Assert.Throws<ModeloInvalidoException>(action).WithMessage(Resources.ValorInvalido);
+        }
+
+        [Fact]
+        public void DeveAlterarCargaHoraria()
+        {
+            //Given
+            var novaCargaHoraria = _faker.Random.Int(1, 180);
+            var curso = CursoBuilder
+                .Novo()
+                .Build();
+
+            //When
+            curso.AlterarCargaHoraria(novaCargaHoraria);
+
+            //Then
+            Assert.Equal(curso.CargaHoraria, novaCargaHoraria);
+        }
+
+        [Theory]
+        [InlineData(0)]
+        [InlineData(-1)]
+        public void NaoDeveAlterarComCargaHorariaInvalida(int cargaHorariaInvalida)
+        {            
+            //Given
+            var curso = CursoBuilder
+                .Novo()
+                .Build();
+            
+            //When
+            Action action = () => curso.AlterarCargaHoraria(cargaHorariaInvalida);
+            
+            //Then
+            Assert.Throws<ModeloInvalidoException>(action).WithMessage(Resources.CargaHorariaInvalida);
+        }
+
+        [Fact]
+        public void DeveAlterarPublicoAlvo()
+        {
+            //Given
+            var novoPublicoAlvo = _faker.Random.Enum<EPublicoAlvo>();
+            var curso = CursoBuilder
+                .Novo()
+                .Build();
+
+            //When
+           curso.AlterarPublicoAlvo(novoPublicoAlvo);  
+
+            //Then
+            Assert.Equal(curso.PublicoAlvo, novoPublicoAlvo);
+        }
+
+        [Theory]
+        [InlineData(-1)]
+        [InlineData(5)]
+        public void NaoDeveAlterarComPublicoAlvoInvalido(int publicoAlvoInvalido)
+        {
+            //Given
+            var curso = CursoBuilder
+                .Novo()
+                .Build();
+
+            //When
+            Action action = () => curso.AlterarPublicoAlvo((EPublicoAlvo) publicoAlvoInvalido);
+            
+            //Then
+            Assert.Throws<ModeloInvalidoException>(action).WithMessage(Resources.PublicoAlvoInvalido);
         }
     }
 }
