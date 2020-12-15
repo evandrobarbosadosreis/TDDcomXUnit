@@ -1,7 +1,6 @@
 using Bogus;
 using CursoOnline.Dominio.Enums;
 using CursoOnline.Dominio.Models;
-using ExpectedObjects;
 using Moq;
 using Xunit;
 

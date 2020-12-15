@@ -11,7 +11,7 @@ namespace CursoOnline.Dominio.Test.Builders
         private string _descricao;
         private int _cargaHoraria;
         private decimal _valor;
-        private readonly EPublicoAlvo _publicoAlvo;
+        private EPublicoAlvo _publicoAlvo;
 
         private CursoBuilder()
         {
@@ -40,6 +40,12 @@ namespace CursoOnline.Dominio.Test.Builders
         public CursoBuilder ComValor(decimal valor)
         {
             _valor = valor;
+            return this;
+        }
+
+        public CursoBuilder ComPublicoAlvo(EPublicoAlvo publicoAlvo)
+        {
+            _publicoAlvo = publicoAlvo;
             return this;
         }
 

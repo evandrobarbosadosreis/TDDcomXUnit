@@ -28,6 +28,11 @@ namespace CursoOnline.Dominio.Models
                 throw new ArgumentException("Valor inválido");
             }
 
+            if (!Enum.IsDefined(publicoAlvo))
+            {   
+                throw new ArgumentException("Público alvo inválido");
+            }
+
             Nome = nome;
             Descricao = descricao;
             CargaHoraria = cargaHoraria;

@@ -84,5 +84,20 @@ namespace CursoOnline.Dominio.Test.Cursos
             //Then
             Assert.Throws<ArgumentException>(action).WithMessage("Valor inválido");
         }
+
+        [Theory(DisplayName = "NaoDeveTerPublicoAlvoInvalido")]
+        [InlineData(-1)]
+        [InlineData(5)]
+        public void NaoDeveTerPublicoAlvoInvalido(int publicoAlvoInvalido)
+        {
+            //When
+            Action action = () => CursoBuilder
+                .Novo()
+                .ComPublicoAlvo((EPublicoAlvo) publicoAlvoInvalido)
+                .Build();
+
+            //Then
+            Assert.Throws<ArgumentException>(action).WithMessage("Público alvo inválido");
+        }
     }
 }
