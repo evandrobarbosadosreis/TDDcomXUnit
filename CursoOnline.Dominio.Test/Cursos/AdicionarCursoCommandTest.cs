@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Bogus;
 using CursoOnline.Dominio.DTO;
 using CursoOnline.Dominio.Enums;
@@ -12,13 +13,13 @@ using Xunit;
 
 namespace CursoOnline.Dominio.Test.Cursos
 {
-    public class ArmazenadorDeCursoTest
+    public class AdicionarCursoCommandTest
     {
         private readonly CursoDTO _cursoDTO;
         private readonly Mock<ICursoRepository> _repository;
-        private readonly ArmazenadorDeCurso _armazenador;
+        private readonly AdicionarCursoCommand _command;
 
-        public ArmazenadorDeCursoTest()
+        public AdicionarCursoCommandTest()
         {
             var fake = new Faker();
             
@@ -32,18 +33,18 @@ namespace CursoOnline.Dominio.Test.Cursos
             };
 
             _repository  = new Mock<ICursoRepository>();
-            _armazenador = new ArmazenadorDeCurso(_repository.Object);            
+            _command = new AdicionarCursoCommand(_repository.Object);            
         }
 
 
         [Fact]
-        public void DeveAdicionarNovoCurso()
+        public async Task DeveAdicionarNovoCurso()
         {            
             //When
-            _armazenador.Armazenar(_cursoDTO);
+            await _command.Adicionar(_cursoDTO);
             
             //Then
-            _repository.Verify(r => r.Adicionar(It.Is<Curso>(curso => 
+            _repository.Verify(r => r.Salvar(It.Is<Curso>(curso => 
                 curso.Nome == _cursoDTO.Nome && 
                 curso.Descricao == _cursoDTO.Descricao && 
                 curso.Valor == _cursoDTO.Valor &&
@@ -53,7 +54,7 @@ namespace CursoOnline.Dominio.Test.Cursos
         }
 
         [Fact(DisplayName = "NaoDeveSalvarCursoComMesmoNome")]
-        public void NaoDeveSalvarCursoComMesmoNome()
+        public async Task NaoDeveSalvarCursoComMesmoNome()
         {
             //Given
             var nomeCursoRepetido = _cursoDTO.Nome;
@@ -61,13 +62,13 @@ namespace CursoOnline.Dominio.Test.Cursos
                 .Novo()
                 .ComNome(nomeCursoRepetido)
                 .Build();
-            _repository.Setup(repo => repo.BuscarPorNome(nomeCursoRepetido)).Returns(cursoJaCadastrado);
+            _repository.Setup(repo => repo.BuscarPorNome(nomeCursoRepetido)).ReturnsAsync(cursoJaCadastrado);
 
             //When
-            Action action = () => _armazenador.Armazenar(_cursoDTO);
+            Func<Task> action = async () => await _command.Adicionar(_cursoDTO);
             
             //Then
-            Assert.Throws<ArgumentException>(action).WithMessage("Já existe um curso cadastrado com esse nome");
+            await Assert.ThrowsAsync<ArgumentException>(action).WithMessageAsync("Já existe um curso cadastrado com esse nome");
         }
     }
 

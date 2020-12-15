@@ -1,22 +1,23 @@
 using System;
+using System.Threading.Tasks;
 using CursoOnline.Dominio.DTO;
 using CursoOnline.Dominio.Interfaces;
 using CursoOnline.Dominio.Models;
 
 namespace CursoOnline.Dominio.Services
 {
-    public class ArmazenadorDeCurso
+    public class AdicionarCursoCommand : IAdicionarCursoCommand
     {
         private readonly ICursoRepository _repository;
 
-        public ArmazenadorDeCurso(ICursoRepository repository)
+        public AdicionarCursoCommand(ICursoRepository repository)
         {
             _repository = repository;
         }
 
-        public void Armazenar(CursoDTO dto)
+        public async Task<bool> Adicionar(CursoDTO dto)
         {
-            var cursoJaCadastrado = _repository.BuscarPorNome(dto.Nome);
+            var cursoJaCadastrado = await _repository.BuscarPorNome(dto.Nome);
 
             if (cursoJaCadastrado != null)
             {
@@ -24,13 +25,13 @@ namespace CursoOnline.Dominio.Services
             }
 
             var curso = new Curso(
-                dto.Nome, 
+                dto.Nome,
                 dto.Descricao,
                 dto.CargaHoraria,
                 dto.PublicoAlvo,
                 dto.Valor);
 
-            _repository.Adicionar(curso);
+            return await _repository.Salvar(curso);
         }
     }
 }

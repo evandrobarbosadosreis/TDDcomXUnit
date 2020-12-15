@@ -1,10 +1,10 @@
+using System.Threading.Tasks;
 using CursoOnline.Dominio.Models;
 
 namespace CursoOnline.Dominio.Interfaces
 {
-    public interface ICursoRepository
+    public interface ICursoRepository : IRepository<Curso>
     {
-        void Adicionar(Curso curso);
-        Curso BuscarPorNome(string nome);
+        Task<Curso> BuscarPorNome(string nome);
     }
 }

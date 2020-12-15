@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace CursoOnline.Dominio.Test.Extensions
@@ -9,5 +10,11 @@ namespace CursoOnline.Dominio.Test.Extensions
         {
             Assert.Equal(exception.Message, expectedMessage);
         }
+
+        public static async Task WithMessageAsync(this Task<ArgumentException> exceptionTask, string expectedMessage)
+        {
+            var exception = await exceptionTask;
+            exception.WithMessage(expectedMessage);
+        }        
     }
 }
