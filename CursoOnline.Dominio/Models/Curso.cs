@@ -1,5 +1,6 @@
 using System;
 using CursoOnline.Dominio.Enums;
+using CursoOnline.Dominio.Utils;
 
 namespace CursoOnline.Dominio.Models
 {
@@ -16,25 +17,13 @@ namespace CursoOnline.Dominio.Models
 
         public Curso(string nome, string descricao, int cargaHoraria, EPublicoAlvo publicoAlvo, decimal valor)
         {
-            if (string.IsNullOrEmpty(nome))
-            {
-                throw new ArgumentException("Nome inválido");
-            }
-
-            if (cargaHoraria <= 0)
-            {
-                throw new ArgumentException("Carga horária inválida");
-            }
-
-            if (valor <= 0)
-            {
-                throw new ArgumentException("Valor inválido");
-            }
-
-            if (!Enum.IsDefined(publicoAlvo))
-            {
-                throw new ArgumentException("Público alvo inválido");
-            }
+            GerenciadorValidacoes
+                .Novo()
+                .Quando(string.IsNullOrEmpty(nome), "Nome inválido")
+                .Quando(cargaHoraria <= 0, "Carga horária inválida")
+                .Quando(valor <= 0, "Valor inválido")
+                .Quando(!Enum.IsDefined(publicoAlvo), "Público alvo inválido")
+                .LancarExceptionSeExistir();
 
             Nome = nome;
             Descricao = descricao;

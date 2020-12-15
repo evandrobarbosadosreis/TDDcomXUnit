@@ -1,4 +1,5 @@
 using CursoOnline.Infra.Config;
+using CursoOnline.Webapi.Filters;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -19,7 +20,7 @@ namespace CursoOnline.Webapi
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers(options => options.Filters.Add<ModeloInvalidoExceptionFilter>());
             services.AddInfraServices(Configuration);
             services.AddSwaggerGen(c =>
             {

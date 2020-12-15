@@ -1,7 +1,7 @@
-using System;
 using System.Threading.Tasks;
 using CursoOnline.Dominio.DTO;
 using CursoOnline.Dominio.Interfaces;
+using CursoOnline.Dominio.Utils;
 
 namespace CursoOnline.Dominio.Services
 {
@@ -20,10 +20,10 @@ namespace CursoOnline.Dominio.Services
         {
             var cursoJaCadastrado = await _repository.BuscarPorNome(dto.Nome);
 
-            if (cursoJaCadastrado != null)
-            {
-                throw new ArgumentException("Já existe um curso cadastrado com esse nome");
-            }
+            GerenciadorValidacoes
+                .Novo()
+                .Quando(cursoJaCadastrado != null, "Já existe um curso cadastrado com esse nome")
+                .LancarExceptionSeExistir();
 
             var curso = _adapter.Parse(dto);
             var sucesso = await _repository.Salvar(curso);

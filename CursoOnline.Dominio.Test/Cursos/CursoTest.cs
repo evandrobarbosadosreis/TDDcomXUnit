@@ -1,6 +1,7 @@
 using System;
 using Bogus;
 using CursoOnline.Dominio.Enums;
+using CursoOnline.Dominio.Exceptions;
 using CursoOnline.Dominio.Models;
 using CursoOnline.Dominio.Test.Builders;
 using CursoOnline.Dominio.Test.Extensions;
@@ -52,7 +53,7 @@ namespace CursoOnline.Dominio.Test.Cursos
                 .Build();
 
             //Then
-            Assert.Throws<ArgumentException>(action).WithMessage("Nome inválido");
+            Assert.Throws<ModeloInvalidoException>(action).WithMessage("Nome inválido");
         }
 
         [Theory(DisplayName = "NaoDeveTerCargaHorariaInvalida")]
@@ -67,7 +68,7 @@ namespace CursoOnline.Dominio.Test.Cursos
                 .Build();
 
             //Then
-            Assert.Throws<ArgumentException>(action).WithMessage("Carga horária inválida");
+            Assert.Throws<ModeloInvalidoException>(action).WithMessage("Carga horária inválida");
         }
 
         [Theory(DisplayName = "NaoDeveTerPrecoInvalido")]
@@ -82,7 +83,7 @@ namespace CursoOnline.Dominio.Test.Cursos
                 .Build();
 
             //Then
-            Assert.Throws<ArgumentException>(action).WithMessage("Valor inválido");
+            Assert.Throws<ModeloInvalidoException>(action).WithMessage("Valor inválido");
         }
 
         [Theory(DisplayName = "NaoDeveTerPublicoAlvoInvalido")]
@@ -97,7 +98,7 @@ namespace CursoOnline.Dominio.Test.Cursos
                 .Build();
 
             //Then
-            Assert.Throws<ArgumentException>(action).WithMessage("Público alvo inválido");
+            Assert.Throws<ModeloInvalidoException>(action).WithMessage("Público alvo inválido");
         }
     }
 }

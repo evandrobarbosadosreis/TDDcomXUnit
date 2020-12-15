@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Bogus;
 using CursoOnline.Dominio.DTO;
 using CursoOnline.Dominio.Enums;
+using CursoOnline.Dominio.Exceptions;
 using CursoOnline.Dominio.Interfaces;
 using CursoOnline.Dominio.Models;
 using CursoOnline.Dominio.Services;
@@ -68,7 +69,7 @@ namespace CursoOnline.Dominio.Test.Cursos
             Func<Task> action = async () => await _command.Adicionar(_cursoDTO);
             
             //Then
-            await Assert.ThrowsAsync<ArgumentException>(action).WithMessageAsync("Já existe um curso cadastrado com esse nome");
+            await Assert.ThrowsAsync<ModeloInvalidoException>(action).WithMessageAsync("Já existe um curso cadastrado com esse nome");
         }
     }
 
