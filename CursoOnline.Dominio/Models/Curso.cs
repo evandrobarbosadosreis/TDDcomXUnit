@@ -11,6 +11,9 @@ namespace CursoOnline.Dominio.Models
         public EPublicoAlvo PublicoAlvo { get; }
         public decimal Valor { get; }
 
+        private Curso()
+        { }
+
         public Curso(string nome, string descricao, int cargaHoraria, EPublicoAlvo publicoAlvo, decimal valor)
         {
             if (string.IsNullOrEmpty(nome))

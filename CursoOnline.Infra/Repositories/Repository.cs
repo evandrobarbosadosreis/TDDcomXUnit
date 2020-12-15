@@ -10,10 +10,10 @@ namespace CursoOnline.Infra.Repositories
     public class Repository<TEntidade> : IRepository<TEntidade> where TEntidade : Entidade
     {
 
-        protected readonly InMemoryContext _context;
+        protected readonly PostgreSQLContext _context;
         protected readonly DbSet<TEntidade> _dataset;
 
-        public Repository(InMemoryContext context)
+        public Repository(PostgreSQLContext context)
         {
             _context = context;
             _dataset = context.Set<TEntidade>();

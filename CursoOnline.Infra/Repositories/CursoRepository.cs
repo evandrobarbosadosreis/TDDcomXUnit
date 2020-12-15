@@ -8,7 +8,7 @@ namespace CursoOnline.Infra.Repositories
 {
     public class CursoRepository : Repository<Curso>, ICursoRepository
     {
-        public CursoRepository(InMemoryContext context) : base(context)
+        public CursoRepository(PostgreSQLContext context) : base(context)
         { }
 
         public Task<Curso> BuscarPorNome(string nome)
