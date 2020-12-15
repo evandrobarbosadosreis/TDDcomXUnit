@@ -5,11 +5,11 @@ namespace CursoOnline.Dominio.Models
 {
     public class Curso : Entidade
     {
-        public string Nome { get; }
-        public string Descricao { get; }
-        public int CargaHoraria { get; }
-        public EPublicoAlvo PublicoAlvo { get; }
-        public decimal Valor { get; }
+        public string Nome { get; private set; }
+        public string Descricao { get; private set; }
+        public int CargaHoraria { get; private set; }
+        public EPublicoAlvo PublicoAlvo { get; private set; }
+        public decimal Valor { get; private set; }
 
         private Curso()
         { }
@@ -32,15 +32,15 @@ namespace CursoOnline.Dominio.Models
             }
 
             if (!Enum.IsDefined(publicoAlvo))
-            {   
+            {
                 throw new ArgumentException("Público alvo inválido");
             }
 
-            Nome         = nome;
-            Descricao    = descricao;
+            Nome = nome;
+            Descricao = descricao;
             CargaHoraria = cargaHoraria;
-            PublicoAlvo  = publicoAlvo;
-            Valor        = valor;
+            PublicoAlvo = publicoAlvo;
+            Valor = valor;
         }
     }
 }
