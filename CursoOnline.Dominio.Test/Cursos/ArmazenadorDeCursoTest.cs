@@ -1,7 +1,10 @@
 using System;
 using Bogus;
+using CursoOnline.Dominio.DTO;
 using CursoOnline.Dominio.Enums;
+using CursoOnline.Dominio.Interfaces;
 using CursoOnline.Dominio.Models;
+using CursoOnline.Dominio.Services;
 using CursoOnline.Dominio.Test.Builders;
 using CursoOnline.Dominio.Test.Extensions;
 using Moq;
@@ -68,48 +71,6 @@ namespace CursoOnline.Dominio.Test.Cursos
         }
     }
 
-    public class CursoDTO
-    {
-        public string Nome { get; set; }
-        public string Descricao { get; set; }
-        public decimal Valor { get; set; }
-        public int CargaHoraria { get; set; }
-        public EPublicoAlvo PublicoAlvo { get; set; }
-    }
 
-    public interface ICursoRepository
-    {
-        void Adicionar(Curso curso);
-        Curso BuscarPorNome(string nome);
-    }
 
-    public class ArmazenadorDeCurso
-    {
-        private readonly ICursoRepository _repository;
-
-        public ArmazenadorDeCurso(ICursoRepository repository)
-        {
-            _repository = repository;
-        }
-
-        public void Armazenar(CursoDTO dto)
-        {
-            var cursoJaCadastrado = _repository.BuscarPorNome(dto.Nome);
-
-            if (cursoJaCadastrado != null)
-            {
-                throw new ArgumentException("Já existe um curso cadastrado com esse nome");
-            }
-
-            var curso = new Curso(
-                dto.Nome, 
-                dto.Descricao,
-                dto.CargaHoraria,
-                dto.PublicoAlvo,
-                dto.Valor);
-
-            _repository.Adicionar(curso);
-        }
-
-    }
 }

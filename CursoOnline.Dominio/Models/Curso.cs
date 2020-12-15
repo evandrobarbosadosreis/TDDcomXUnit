@@ -3,7 +3,7 @@ using CursoOnline.Dominio.Enums;
 
 namespace CursoOnline.Dominio.Models
 {
-    public class Curso
+    public class Curso : Entidade
     {
         public string Nome { get; }
         public string Descricao { get; }
@@ -33,11 +33,11 @@ namespace CursoOnline.Dominio.Models
                 throw new ArgumentException("Público alvo inválido");
             }
 
-            Nome = nome;
-            Descricao = descricao;
+            Nome         = nome;
+            Descricao    = descricao;
             CargaHoraria = cargaHoraria;
-            PublicoAlvo = publicoAlvo;
-            Valor = valor;
+            PublicoAlvo  = publicoAlvo;
+            Valor        = valor;
         }
     }
 }
