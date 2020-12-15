@@ -9,7 +9,7 @@ namespace CursoOnline.Dominio.Interfaces
         Task<bool> Salvar(TEntidade entidade);
         Task<bool> Atualizar(TEntidade entidade);
         Task<bool> Excluir(TEntidade entidade);
-        Task<TEntidade> BuscarPorId(int id);
-        Task<IEnumerable<TEntidade>> BuscarTodos();
+        ValueTask<TEntidade> BuscarPorId(int id);
+        Task<List<TEntidade>> BuscarTodos();
     }
 }
