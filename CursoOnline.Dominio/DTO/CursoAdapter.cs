@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using CursoOnline.Dominio.Interfaces;
+using CursoOnline.Dominio.DTO.Interfaces;
 using CursoOnline.Dominio.Models;
 
 namespace CursoOnline.Dominio.DTO
@@ -29,10 +29,10 @@ namespace CursoOnline.Dominio.DTO
                 PublicoAlvo  = source.PublicoAlvo,
                 Valor        = source.Valor
             };
-        }        
-
-        public IEnumerable<Curso> Parse(IEnumerable<CursoDTO> source) => source.Select(Parse);
-
+        }
+      
         public IEnumerable<CursoDTO> Parse(IEnumerable<Curso> source) => source.Select(Parse);
+
+        public IEnumerable<Curso> Parse(IEnumerable<CursoDTO> source) => source.Select(Parse);  
     }
 }

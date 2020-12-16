@@ -1,6 +1,7 @@
 using System.Collections.Generic;
+using System.Linq;
 
-namespace CursoOnline.Dominio.Interfaces
+namespace CursoOnline.Dominio.DTO.Interfaces
 {
     public interface IAdapter<TSource, TDestiny>
     {

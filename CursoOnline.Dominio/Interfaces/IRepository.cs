@@ -6,10 +6,11 @@ namespace CursoOnline.Dominio.Interfaces
 {
     public interface IRepository<TEntidade> where TEntidade : Entidade
     {
-        Task<bool> Salvar(TEntidade entidade);
-        Task<bool> Atualizar(TEntidade entidade);
-        Task<bool> Excluir(TEntidade entidade);
-        ValueTask<TEntidade> BuscarPorId(int id);
-        Task<List<TEntidade>> BuscarTodos();
+        Task Adicionar(TEntidade entidade);
+        void Excluir(TEntidade entidade);
+        ValueTask<TEntidade> BuscarPorId(int? id);
+        Task<IEnumerable<TEntidade>> BuscarTodos();
+        Task<bool> RegistroExiste(int? id);
+        Task<int> Commit();
     }
 }

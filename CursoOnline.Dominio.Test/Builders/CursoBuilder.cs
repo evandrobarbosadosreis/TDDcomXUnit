@@ -7,6 +7,7 @@ namespace CursoOnline.Dominio.Test.Builders
     public class CursoBuilder
     {
 
+        private int _id;
         private string _nome;
         private string _descricao;
         private int _cargaHoraria;
@@ -16,6 +17,7 @@ namespace CursoOnline.Dominio.Test.Builders
         private CursoBuilder()
         {
             var faker = new Faker();
+            _id           = 0;
             _nome         = faker.Random.Word();
             _descricao    = faker.Lorem.Paragraph();
             _cargaHoraria = faker.Random.Int(1, 180);
@@ -23,7 +25,13 @@ namespace CursoOnline.Dominio.Test.Builders
             _publicoAlvo  = faker.Random.Enum<EPublicoAlvo>();
         }
 
-        public static CursoBuilder Novo() => new CursoBuilder();
+        public static CursoBuilder CriarNovo() => new CursoBuilder();
+
+        public CursoBuilder ComId(int id)
+        {
+            _id = id;
+            return this;
+        }
 
         public CursoBuilder ComNome(string nome) 
         {
@@ -51,12 +59,20 @@ namespace CursoOnline.Dominio.Test.Builders
 
         public Curso Build()
         {
-            return new Curso(
+            var curso = new Curso(
                 _nome,
                 _descricao,
                 _cargaHoraria,
                 _publicoAlvo,
                 _valor);
+
+            if (_id > 0)
+            {
+                var prop = curso.GetType().GetProperty("Id");
+                prop.SetValue(curso, _id);
+            }
+
+            return curso;
         }
 
     }

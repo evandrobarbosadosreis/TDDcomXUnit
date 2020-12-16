@@ -1,9 +1,9 @@
-using System;
 using CursoOnline.Dominio.Enums;
 using CursoOnline.Dominio.Utils;
 
 namespace CursoOnline.Dominio.Models
 {
+
     public class Curso : Entidade
     {
         public string Nome { get; private set; }
@@ -17,13 +17,14 @@ namespace CursoOnline.Dominio.Models
 
         public Curso(string nome, string descricao, int cargaHoraria, EPublicoAlvo publicoAlvo, decimal valor)
         {
-            GerenciadorValidacoes
-                .Novo()
-                .Quando(string.IsNullOrEmpty(nome), Resources.NomeInvalido)
-                .Quando(cargaHoraria <= 0, Resources.CargaHorariaInvalida)
-                .Quando(valor <= 0, Resources.ValorInvalido)
-                .Quando(!Enum.IsDefined(publicoAlvo), Resources.PublicoAlvoInvalido)
-                .LancarExceptionSeExistir();
+
+            ValidacaoBuilder
+                .CriarNovo()
+                .SeEmBrancoOuNull(nome, Resources.NomeInvalido)
+                .SeMenorOuIgualZero(cargaHoraria, Resources.CargaHorariaInvalida)
+                .SeMenorOuIgualZero(valor, Resources.ValorInvalido)
+                .SeEnumForInvalido(publicoAlvo, Resources.PublicoAlvoInvalido)
+                .Build();
 
             Nome         = nome;
             Descricao    = descricao;
@@ -34,10 +35,10 @@ namespace CursoOnline.Dominio.Models
 
         public void AlterarNome(string novoNome)
         {
-            GerenciadorValidacoes
-                .Novo()
-                .Quando(String.IsNullOrEmpty(novoNome), Resources.NomeInvalido)
-                .LancarExceptionSeExistir();
+            ValidacaoBuilder
+                .CriarNovo()
+                .SeEmBrancoOuNull(novoNome, Resources.NomeInvalido)
+                .Build();
             
             Nome = novoNome;
         }
@@ -49,30 +50,30 @@ namespace CursoOnline.Dominio.Models
 
         public void AlterarValor(decimal novoValor)
         {
-            GerenciadorValidacoes
-                .Novo()
-                .Quando(novoValor <= 0, Resources.ValorInvalido)
-                .LancarExceptionSeExistir();
+            ValidacaoBuilder
+                .CriarNovo()
+                .SeMenorOuIgualZero(novoValor, Resources.ValorInvalido)
+                .Build();
 
             Valor = novoValor;
         }
 
         public void AlterarCargaHoraria(int novaCargaHoraria)
         {
-            GerenciadorValidacoes
-                .Novo()
-                .Quando(novaCargaHoraria <= 0,  Resources.CargaHorariaInvalida)
-                .LancarExceptionSeExistir();
+            ValidacaoBuilder
+                .CriarNovo()
+                .SeMenorOuIgualZero(novaCargaHoraria,  Resources.CargaHorariaInvalida)
+                .Build();
 
             CargaHoraria = novaCargaHoraria;
         }
 
         public void AlterarPublicoAlvo(EPublicoAlvo novoPublicoAlvo)
         {
-            GerenciadorValidacoes
-                .Novo()
-                .Quando(!Enum.IsDefined(novoPublicoAlvo), Resources.PublicoAlvoInvalido)
-                .LancarExceptionSeExistir();            
+            ValidacaoBuilder
+                .CriarNovo()
+                .SeEnumForInvalido(novoPublicoAlvo, Resources.PublicoAlvoInvalido)
+                .Build();            
 
             PublicoAlvo = novoPublicoAlvo;
         }

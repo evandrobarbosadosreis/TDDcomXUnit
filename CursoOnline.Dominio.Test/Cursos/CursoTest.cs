@@ -6,14 +6,12 @@ using CursoOnline.Dominio.Models;
 using CursoOnline.Dominio.Test.Builders;
 using CursoOnline.Dominio.Test.Extensions;
 using CursoOnline.Dominio.Utils;
-using ExpectedObjects;
 using Xunit;
 
 namespace CursoOnline.Dominio.Test.Cursos
 {
     public class CursoTest
     {
-
         private readonly Faker _faker;
 
         public CursoTest()
@@ -22,30 +20,30 @@ namespace CursoOnline.Dominio.Test.Cursos
         }
 
         [Fact]
-        public void DeveCriarCursoCorretamente()
+        public void DeveCriarCorretamente()
         {
             //Given
-            var cursoEsperado = new
-            {
-                Nome         = _faker.Random.Word(),
-                Descricao    = _faker.Lorem.Paragraph(),
-                CargaHoraria = _faker.Random.Int(1, 180),
-                Valor        = _faker.Random.Decimal(0.01m, 1000m),
-                PublicoAlvo  = _faker.Random.Enum<EPublicoAlvo>()
-            };
+            var nome         = _faker.Random.Word();
+            var descricao    = _faker.Lorem.Paragraph();
+            var cargaHoraria = _faker.Random.Int(1, 180);
+            var valor        = _faker.Random.Decimal(0.01m, 1000m);
+            var publicoAlvo  = _faker.Random.Enum<EPublicoAlvo>();
 
             //When
             var curso = new Curso(
-                cursoEsperado.Nome,
-                cursoEsperado.Descricao,
-                cursoEsperado.CargaHoraria,
-                cursoEsperado.PublicoAlvo,
-                cursoEsperado.Valor);
+                nome,
+                descricao,
+                cargaHoraria,
+                publicoAlvo,
+                valor);
 
             //Then
-            cursoEsperado.ToExpectedObject().Matches(curso);
+            Assert.Equal(nome, curso.Nome);
+            Assert.Equal(descricao, curso.Descricao);
+            Assert.Equal(cargaHoraria, curso.CargaHoraria);
+            Assert.Equal(valor, curso.Valor);
+            Assert.Equal(publicoAlvo, curso.PublicoAlvo);
         }
-
 
         [Theory]
         [InlineData("")]
@@ -54,12 +52,12 @@ namespace CursoOnline.Dominio.Test.Cursos
         {
             //When
             Action action = () => CursoBuilder
-                .Novo()
+                .CriarNovo()
                 .ComNome(nomeInvalido)
                 .Build();
 
             //Then
-            Assert.Throws<ModeloInvalidoException>(action).WithMessage(Resources.NomeInvalido);
+            Assert.Throws<ModeloInvalidoException>(action).ComMensagem(Resources.NomeInvalido);
         }
 
         [Theory]
@@ -69,12 +67,12 @@ namespace CursoOnline.Dominio.Test.Cursos
         {
             //When
             Action action = () => CursoBuilder
-                .Novo()
+                .CriarNovo()
                 .ComCargaHoraria(cargaHorariaInvalida)
                 .Build();
 
             //Then
-            Assert.Throws<ModeloInvalidoException>(action).WithMessage(Resources.CargaHorariaInvalida);
+            Assert.Throws<ModeloInvalidoException>(action).ComMensagem(Resources.CargaHorariaInvalida);
         }
 
         [Theory]
@@ -85,12 +83,12 @@ namespace CursoOnline.Dominio.Test.Cursos
         {
             //When
             Action action = () => CursoBuilder
-                .Novo()
+                .CriarNovo()
                 .ComValor(valorInvalido)
                 .Build();
 
             //Then
-            Assert.Throws<ModeloInvalidoException>(action).WithMessage(Resources.ValorInvalido);
+            Assert.Throws<ModeloInvalidoException>(action).ComMensagem(Resources.ValorInvalido);
         }
 
         [Theory]
@@ -100,12 +98,12 @@ namespace CursoOnline.Dominio.Test.Cursos
         {
             //When
             Action action = () => CursoBuilder
-                .Novo()
+                .CriarNovo()
                 .ComPublicoAlvo((EPublicoAlvo) publicoAlvoInvalido)
                 .Build();
 
             //Then
-            Assert.Throws<ModeloInvalidoException>(action).WithMessage(Resources.PublicoAlvoInvalido);
+            Assert.Throws<ModeloInvalidoException>(action).ComMensagem(Resources.PublicoAlvoInvalido);
         }
 
         [Fact]
@@ -114,31 +112,14 @@ namespace CursoOnline.Dominio.Test.Cursos
             //Given
             var novoNome = _faker.Random.Word();
             var curso = CursoBuilder
-                .Novo()
+                .CriarNovo()
                 .Build();
 
             //When
             curso.AlterarNome(novoNome);
 
             //Then
-            Assert.Equal(curso.Nome, novoNome);
-        }
-
-        [Theory]
-        [InlineData("")]
-        [InlineData(null)]
-        public void NaoDeveAlterarComNomeInvalido(string nomeInvalido)
-        {
-            //Given
-            var curso = CursoBuilder
-                .Novo()
-                .Build();
-            
-            //When
-            Action action = () => curso.AlterarNome(nomeInvalido);
-            
-            //Then
-            Assert.Throws<ModeloInvalidoException>(action).WithMessage(Resources.NomeInvalido);
+            Assert.Equal(novoNome, curso.Nome);
         }
 
         [Fact]
@@ -147,14 +128,14 @@ namespace CursoOnline.Dominio.Test.Cursos
             //Given
             var novaDescricao = _faker.Lorem.Paragraph();
             var curso = CursoBuilder
-                .Novo()
+                .CriarNovo()
                 .Build();
 
             //When
             curso.AlterarDescricao(novaDescricao);
 
             //Then
-            Assert.Equal(curso.Descricao, novaDescricao);
+            Assert.Equal(novaDescricao, curso.Descricao);
         }
 
         [Fact]
@@ -163,15 +144,64 @@ namespace CursoOnline.Dominio.Test.Cursos
             //Given
             var novoValor = _faker.Random.Decimal(0.01m, 1500m);
             var curso = CursoBuilder
-                .Novo()
+                .CriarNovo()
                 .Build();
 
             //When
             curso.AlterarValor(novoValor);
 
             //Then
-            Assert.Equal(curso.Valor, novoValor);
+            Assert.Equal(novoValor, curso.Valor);
         }
+
+        [Fact]
+        public void DeveAlterarCargaHoraria()
+        {
+            //Given
+            var novaCargaHoraria = _faker.Random.Int(1, 180);
+            var curso = CursoBuilder
+                .CriarNovo()
+                .Build();
+
+            //When
+            curso.AlterarCargaHoraria(novaCargaHoraria);
+
+            //Then
+            Assert.Equal(novaCargaHoraria, curso.CargaHoraria);
+        }
+
+        [Fact]
+        public void DeveAlterarPublicoAlvo()
+        {
+            //Given
+            var novoPublicoAlvo = _faker.Random.Enum<EPublicoAlvo>();
+            var curso = CursoBuilder
+                .CriarNovo()
+                .Build();
+
+            //When
+           curso.AlterarPublicoAlvo(novoPublicoAlvo);  
+
+            //Then
+            Assert.Equal(novoPublicoAlvo, curso.PublicoAlvo);
+        }        
+
+        [Theory]
+        [InlineData("")]
+        [InlineData(null)]
+        public void NaoDeveAlterarComNomeInvalido(string nomeInvalido)
+        {
+            //Given
+            var curso = CursoBuilder
+                .CriarNovo()
+                .Build();
+            
+            //When
+            Action action = () => curso.AlterarNome(nomeInvalido);
+            
+            //Then
+            Assert.Throws<ModeloInvalidoException>(action).ComMensagem(Resources.NomeInvalido);
+        }        
 
         [Theory]
         [InlineData(0.0)]
@@ -181,30 +211,14 @@ namespace CursoOnline.Dominio.Test.Cursos
         {
             //Given
             var curso = CursoBuilder
-                .Novo()
+                .CriarNovo()
                 .Build();
 
             //When
             Action action = () => curso.AlterarValor(valorInvalido);
 
             //Then
-            Assert.Throws<ModeloInvalidoException>(action).WithMessage(Resources.ValorInvalido);
-        }
-
-        [Fact]
-        public void DeveAlterarCargaHoraria()
-        {
-            //Given
-            var novaCargaHoraria = _faker.Random.Int(1, 180);
-            var curso = CursoBuilder
-                .Novo()
-                .Build();
-
-            //When
-            curso.AlterarCargaHoraria(novaCargaHoraria);
-
-            //Then
-            Assert.Equal(curso.CargaHoraria, novaCargaHoraria);
+            Assert.Throws<ModeloInvalidoException>(action).ComMensagem(Resources.ValorInvalido);
         }
 
         [Theory]
@@ -214,30 +228,14 @@ namespace CursoOnline.Dominio.Test.Cursos
         {            
             //Given
             var curso = CursoBuilder
-                .Novo()
+                .CriarNovo()
                 .Build();
             
             //When
             Action action = () => curso.AlterarCargaHoraria(cargaHorariaInvalida);
             
             //Then
-            Assert.Throws<ModeloInvalidoException>(action).WithMessage(Resources.CargaHorariaInvalida);
-        }
-
-        [Fact]
-        public void DeveAlterarPublicoAlvo()
-        {
-            //Given
-            var novoPublicoAlvo = _faker.Random.Enum<EPublicoAlvo>();
-            var curso = CursoBuilder
-                .Novo()
-                .Build();
-
-            //When
-           curso.AlterarPublicoAlvo(novoPublicoAlvo);  
-
-            //Then
-            Assert.Equal(curso.PublicoAlvo, novoPublicoAlvo);
+            Assert.Throws<ModeloInvalidoException>(action).ComMensagem(Resources.CargaHorariaInvalida);
         }
 
         [Theory]
@@ -247,14 +245,16 @@ namespace CursoOnline.Dominio.Test.Cursos
         {
             //Given
             var curso = CursoBuilder
-                .Novo()
+                .CriarNovo()
                 .Build();
 
             //When
             Action action = () => curso.AlterarPublicoAlvo((EPublicoAlvo) publicoAlvoInvalido);
-            
+
             //Then
-            Assert.Throws<ModeloInvalidoException>(action).WithMessage(Resources.PublicoAlvoInvalido);
+            Assert.Throws<ModeloInvalidoException>(action).ComMensagem(Resources.PublicoAlvoInvalido);
         }
+
     }
+
 }
